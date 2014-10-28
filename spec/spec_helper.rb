@@ -3,6 +3,6 @@ require 'rubygems'
 require 'bundler/setup'
 require 'support/vcr'
 
-RSpec.configure do |config|
-  config.extend VCR::RSpec::Macros
+VCR.configure do |config|
+  config.configure_rspec_metadata!
 end
