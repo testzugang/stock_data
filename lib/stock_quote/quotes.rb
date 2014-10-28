@@ -5,23 +5,6 @@ require 'date'
 include StockQuote::Utility
 
 module StockQuote
-  # => SecQuote::NoDataForStockError
-  # Is returned for 404s and ErrorIndicationreturnedforsymbolchangedinvalid
-  class NoDataForStockError < StandardError
-    attr_reader :no_data_message
-    def initialize(data = {}, *)
-      if data['ErrorIndicationreturnedforsymbolchangedinvalid']
-        @no_data_message = data['ErrorIndicationreturnedforsymbolchangedinvalid']
-      elsif data['diagnostics'] && data['diagnostics']['warning']
-        @no_data_message = data['diagnostics']['warning']
-      elsif data['count'] && data['count'] == 0
-        @no_data_message = 'Query returns no valid data'
-      end
-    end
-    def failure?; true end
-    def success?; false end
-    def response_code; 404 end
-  end
 
   # => SecQuote::Stock
   # Queries Yahoo for current and historical pricing.
@@ -68,7 +51,7 @@ module StockQuote
 
     def self.quote(symbol, start_date = nil, end_date = nil, select = '*', format = 'instance')
       url = 'https://query.yahooapis.com/v1/public/yql?q='
-      select = format_select(select)
+      select = StockQuote::format_select(select, FIELDS)
       if start_date && end_date
         url += URI.encode("SELECT #{ select } FROM yahoo.finance.historicaldata WHERE symbol IN (#{to_p(symbol)}) AND startDate = '#{start_date}' AND endDate = '#{end_date}'")
       else
@@ -90,13 +73,6 @@ module StockQuote
       quote(symbol, start_date, end_date, select, format)
     end
 
-    def self.format_select(select)
-      return select if select.is_a?(String) && !!('*'.match(/\*/))
-      select = select.split(',') if select.is_a?(String)
-      select = select.reject{ |e| !(FIELDS.include? e) }
-      select.length > 0 ? select.join(',') : '*'
-    end
-
     def self.simple_return(symbol, start_date = Date.parse('2012-01-01'), end_date = Date.today)
       start, finish = to_date(start_date), to_date(end_date)
       raise ArgumentError.new('start dt after end dt') if start > finish
@@ -104,10 +80,10 @@ module StockQuote
       quotes = []
       begin
         year_quotes = quote(
-          symbol,
-          start,
-          min_date(finish, start + 365),
-          'Close'
+            symbol,
+            start,
+            min_date(finish, start + 365),
+            'Close'
         )
         if year_quotes.is_a?(Array)
           quotes += year_quotes
@@ -151,7 +127,7 @@ module StockQuote
         quotes += !!(format=='json') ? quote['quote'] : Array(quote)
         start += 365
       end until finish - start < 365
-      return !!(format=='json') ? { 'quote' => quotes } : quotes
+      return !!(format=='json') ? {'quote' => quotes} : quotes
 
     rescue NoDataForStockError => e
       return e
