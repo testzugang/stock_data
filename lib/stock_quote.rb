@@ -32,11 +32,4 @@ module StockQuote
     end
   end
 
-  def self.format_select(select, fields = [])
-    return select if select.is_a?(String) && !!('*'.match(/\*/))
-    select = select.split(',') if select.is_a?(String)
-    select = select.reject { |e| !(fields.include? e) }
-    select.length > 0 ? select.join(',') : '*'
-  end
-
 end

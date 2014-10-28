@@ -2,16 +2,15 @@ require 'rubygems'
 require 'rest-client'
 require 'json'
 require 'date'
+require 'stock_quote/yahoo_finance_query'
 include StockQuote::Utility
 
 module StockQuote
 
   # => SecQuote::Stock
   # Queries Yahoo for current and historical pricing.
-  class Quotes
+  class Quotes < YahooFinanceQuery
     FIELDS = %w(Symbol Ask AverageDailyVolume Bid AskRealtime BidRealtime BookValue Change_PercentChange Change Commission ChangeRealtime AfterHoursChangeRealtime DividendShare LastTradeDate TradeDate EarningsShare ErrorIndicationreturnedforsymbolchangedinvalid EPSEstimateCurrentYear EPSEstimateNextYear EPSEstimateNextQuarter DaysLow DaysHigh YearLow YearHigh HoldingsGainPercent AnnualizedGain HoldingsGain HoldingsGainPercentRealtime HoldingsGainRealtime MoreInfo OrderBookRealtime MarketCapitalization MarketCapRealtime EBITDA ChangeFromYearLow PercentChangeFromYearLow LastTradeRealtimeWithTime ChangePercentRealtime ChangeFromYearHigh PercebtChangeFromYearHigh LastTradeWithTime LastTradePriceOnly HighLimit LowLimit DaysRange DaysRangeRealtime FiftydayMovingAverage TwoHundreddayMovingAverage ChangeFromTwoHundreddayMovingAverage PercentChangeFromTwoHundreddayMovingAverage ChangeFromFiftydayMovingAverage PercentChangeFromFiftydayMovingAverage Name Notes Open PreviousClose PricePaid ChangeinPercent PriceSales PriceBook ExDividendDate PERatio DividendPayDate PERatioRealtime PEGRatio PriceEPSEstimateCurrentYear PriceEPSEstimateNextYear Symbol SharesOwned ShortRatio LastTradeTime TickerTrend OneyrTargetPrice Volume HoldingsValue HoldingsValueRealtime YearRange DaysValueChange DaysValueChangeRealtime StockExchange DividendYield PercentChange ErrorIndicationreturnedforsymbolchangedinvalid Date Open High Low Close AdjClose)
-
-    attr_accessor :response_code, :no_data_message
 
     FIELDS.each do |field|
       __send__(:attr_accessor, to_underscore(field).to_sym)
@@ -21,37 +20,9 @@ module StockQuote
       FIELDS
     end
 
-    def initialize(data)
-      if data['ErrorIndicationreturnedforsymbolchangedinvalid']
-        @no_data_message = data['ErrorIndicationreturnedforsymbolchangedinvalid']
-        @response_code = 404
-      elsif data['diagnostics'] && data['diagnostics']['warning']
-        @no_data_message = data['diagnostics']['warning']
-        @response_code = 404
-      elsif data['count'] && data['count'] == 0
-        @no_data_message = 'Query returns no valid data'
-        @response_code = 404
-      else
-        @response_code = 200
-        data.map do |k, v|
-          instance_variable_set("@#{to_underscore(k)}", (v.nil? ? nil : to_format(v)))
-        end
-      end
-    end
-
-    def success?
-      warn "[DEPRECATION] `Stock#success?` is deprecated.  Please use `NoDataForStockError` instead."
-      response_code == 200
-    end
-
-    def failure?
-      warn "[DEPRECATION] `Stock#failure?` is deprecated.  Please use `NoDataForStockError` instead."
-      response_code == 404
-    end
-
     def self.quote(symbol, start_date = nil, end_date = nil, select = '*', format = 'instance')
       url = 'https://query.yahooapis.com/v1/public/yql?q='
-      select = StockQuote::format_select(select, FIELDS)
+      select = format_select(select, FIELDS)
       if start_date && end_date
         url += URI.encode("SELECT #{ select } FROM yahoo.finance.historicaldata WHERE symbol IN (#{to_p(symbol)}) AND startDate = '#{start_date}' AND endDate = '#{end_date}'")
       else
@@ -59,14 +30,7 @@ module StockQuote
       end
       url += '&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback='
 
-      RestClient.get(url) do |response|
-        if response.code == 200
-          parse(response, symbol, format)
-        else
-          warn "[BAD REQUEST] #{ url }"
-          NoDataForStockError.new
-        end
-      end
+      request_query(format, symbol, url)
     end
 
     def self.json_quote(symbol, start_date = nil, end_date = nil, select = '*', format = 'json')
