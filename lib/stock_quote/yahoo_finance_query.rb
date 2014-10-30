@@ -34,6 +34,8 @@ module StockQuote
     end
 
     def self.request_query(format, symbol, url)
+      url = 'https://query.yahooapis.com/v1/public/yql?q=' + url
+      url += '&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback='
       RestClient.get(url) do |response|
         if response.code == 200
           parse(response, symbol, format)

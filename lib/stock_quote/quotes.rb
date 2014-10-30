@@ -21,14 +21,13 @@ module StockQuote
     end
 
     def self.quote(symbol, start_date = nil, end_date = nil, select = '*', format = 'instance')
-      url = 'https://query.yahooapis.com/v1/public/yql?q='
+      url = nil
       select = format_select(select, FIELDS)
       if start_date && end_date
-        url += URI.encode("SELECT #{ select } FROM yahoo.finance.historicaldata WHERE symbol IN (#{to_p(symbol)}) AND startDate = '#{start_date}' AND endDate = '#{end_date}'")
+        url = URI.encode("SELECT #{ select } FROM yahoo.finance.historicaldata WHERE symbol IN (#{to_p(symbol)}) AND startDate = '#{start_date}' AND endDate = '#{end_date}'")
       else
-        url += URI.encode("SELECT #{ select } FROM yahoo.finance.quotes WHERE symbol IN (#{to_p(symbol)})")
+        url = URI.encode("SELECT #{ select } FROM yahoo.finance.quotes WHERE symbol IN (#{to_p(symbol)})")
       end
-      url += '&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback='
 
       request_query(format, symbol, url)
     end
