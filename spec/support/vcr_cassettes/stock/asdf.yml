@@ -1,0 +1,102 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://query.yahooapis.com/v1/public/yql?callback=&diagnostics=true&env=store://datatables.org/alltableswithkeys&format=json&q=SELECT%20*%20FROM%20yahoo.finance.stocks%20WHERE%20symbol='asdf'
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Anticrime:
+      - M15bNv0y5hctG3Z
+      Set-Cookie:
+      - X-AC=E
+      X-Yql-Host:
+      - engine2.yql.bf1.yahoo.com
+      X-Content-Type-Options:
+      - nosniff
+      Access-Control-Allow-Origin:
+      - ! '*'
+      Cache-Control:
+      - no-cache
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Sat, 01 Nov 2014 22:13:43 GMT
+      Server:
+      - ATS
+      Age:
+      - '2'
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+    body:
+      encoding: US-ASCII
+      string: ! '{"query":{"count":1,"created":"2014-11-01T22:13:44Z","lang":"en-US","diagnostics":{"url":[{"execution-start-time":"1","execution-stop-time":"41","execution-time":"40","content":"http://www.datatables.org/yahoo/finance/yahoo.finance.stocks.xml"},{"execution-start-time":"164","execution-stop-time":"628","execution-time":"464","content":"http://finance.yahoo.com/q/pr?s=asdf"},{"execution-start-time":"164","execution-stop-time":"628","execution-time":"464","content":"http://finance.yahoo.com/q/pr?s=asdf"},{"execution-start-time":"164","execution-stop-time":"628","execution-time":"464","content":"http://finance.yahoo.com/q/pr?s=asdf"},{"execution-start-time":"164","execution-stop-time":"628","execution-time":"464","content":"http://finance.yahoo.com/q/pr?s=asdf"},{"execution-start-time":"237","execution-stop-time":"665","execution-time":"428","content":"http://finance.yahoo.com/q?s=asdf"},{"execution-start-time":"237","execution-stop-time":"665","execution-time":"428","content":"http://finance.yahoo.com/q?s=asdf"},{"execution-start-time":"237","execution-stop-time":"665","execution-time":"428","content":"http://finance.yahoo.com/q?s=asdf"},{"execution-start-time":"237","execution-stop-time":"665","execution-time":"428","content":"http://finance.yahoo.com/q?s=asdf"},{"execution-start-time":"277","execution-stop-time":"721","execution-time":"444","content":"http://finance.yahoo.com/q/hp?s=asdf"},{"execution-start-time":"277","execution-stop-time":"721","execution-time":"444","content":"http://finance.yahoo.com/q/hp?s=asdf"},{"execution-start-time":"277","execution-stop-time":"721","execution-time":"444","content":"http://finance.yahoo.com/q/hp?s=asdf"},{"execution-start-time":"277","execution-stop-time":"721","execution-time":"444","content":"http://finance.yahoo.com/q/hp?s=asdf"}],"publiclyCallable":"true","cache":[{"execution-start-time":"123","execution-stop-time":"164","execution-time":"41","method":"GET","type":"MEMCACHED","content":"bcd022d1d39e092a7a1390d6f5cf574a"},{"execution-start-time":"164","execution-stop-time":"236","execution-time":"72","method":"GET","type":"MEMCACHED","content":"32c5f8788e8bc68ba5e635ae25257e23"},{"execution-start-time":"236","execution-stop-time":"277","execution-time":"41","method":"GET","type":"MEMCACHED","content":"8c548d6a60dd1f067626b9ecdf556eb3"}],"redirect":[{"from":"http://finance.yahoo.com/q/pr?s=asdf","status":"302","content":"http://finance.yahoo.com/lookup;_ylc=X3oDMTFyZW1qc2htBGtleXcDYXNkZgRtaWQDbWVkaWFxdW90ZXNzZWFyY2gEc2VjA2dldHF1b3Rlc2J0bgRzbGsDbG9va3Vw?s=asdf"},{"from":"http://finance.yahoo.com/q/pr?s=asdf","status":"301","content":"http://finance.yahoo.com/lookup?s=asdf&s=asdf"},{"from":"http://finance.yahoo.com/q?s=asdf","status":"302","content":"http://finance.yahoo.com/lookup;_ylc=X3oDMTFyZW1qc2htBGtleXcDYXNkZgRtaWQDbWVkaWFxdW90ZXNzZWFyY2gEc2VjA2dldHF1b3Rlc2J0bgRzbGsDbG9va3Vw?s=asdf"},{"from":"http://finance.yahoo.com/q/hp?s=asdf","status":"302","content":"http://finance.yahoo.com/lookup;_ylc=X3oDMTFyZW1qc2htBGtleXcDYXNkZgRtaWQDbWVkaWFxdW90ZXNzZWFyY2gEc2VjA2dldHF1b3Rlc2J0bgRzbGsDbG9va3Vw?s=asdf"},{"from":"http://finance.yahoo.com/q?s=asdf","status":"301","content":"http://finance.yahoo.com/lookup?s=asdf&s=asdf"},{"from":"http://finance.yahoo.com/q/hp?s=asdf","status":"301","content":"http://finance.yahoo.com/lookup?s=asdf&s=asdf"}],"query":[{"execution-start-time":"164","execution-stop-time":"630","execution-time":"466","params":"{url=[http://finance.yahoo.com/q/pr?s=asdf]}","content":"select
+        * from html where url=@url and xpath=''//table[@class=\"yfnc_datamodoutline1\"]/tr/td/table/tr''
+        limit 4"},{"execution-start-time":"236","execution-stop-time":"669","execution-time":"433","params":"{url=[http://finance.yahoo.com/q?s=asdf]}","content":"select
+        * from html where url=@url and xpath=''//div[@id=\"yfi_investing_head\"]/h1
+        | //div[@class=\"yfi_quote_summary\"]/div[1]''"},{"execution-start-time":"277","execution-stop-time":"724","execution-time":"447","params":"{url=[http://finance.yahoo.com/q/hp?s=asdf]}","content":"select
+        * from html where url=@url and xpath=''//option[@selected=\"selected\"] |
+        //input[@maxlength=\"2\"] | //input[@maxlength=\"4\"]''"}],"javascript":{"execution-start-time":"122","execution-stop-time":"723","execution-time":"601","instructions-used":"36000","table-name":"yahoo.finance.stocks"},"user-time":"724","service-time":"5463","build-version":"0.2.172"},"results":{"stock":{"symbol":"asdf"}}}}'
+    http_version: 
+  recorded_at: Sat, 01 Nov 2014 22:13:44 GMT
+- request:
+    method: get
+    uri: https://query.yahooapis.com/v1/public/yql?callback=&diagnostics=true&env=store://datatables.org/alltableswithkeys&format=json&q=SELECT%20*%20FROM%20yahoo.finance.stocks%20WHERE%20symbol='%5C/'
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 400
+      message: Bad Request
+    headers:
+      X-Anticrime:
+      - b6whazzlo
+      Set-Cookie:
+      - X-AC=B_eDboC
+      X-Yql-Host:
+      - engine5.yql.bf1.yahoo.com
+      X-Content-Type-Options:
+      - nosniff
+      Access-Control-Allow-Origin:
+      - ! '*'
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Sat, 01 Nov 2014 22:13:48 GMT
+      Server:
+      - ATS
+      Age:
+      - '1'
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+    body:
+      encoding: US-ASCII
+      string: ! '{"error":{"lang":"en-US","diagnostics":null,"description":"Query
+        syntax error(s) [line 1:50 mismatched character ''/'' expecting set null]"}}'
+    http_version: 
+  recorded_at: Sat, 01 Nov 2014 22:13:49 GMT
+recorded_with: VCR 2.9.3

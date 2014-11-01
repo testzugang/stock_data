@@ -35,6 +35,26 @@ describe StockQuote::Stock do
 
     end
 
+    vcr_options = {cassette_name: 'asdf'}
+    context 'failure', vcr: vcr_options do
+
+      @fields = StockQuote::Stock::FIELDS
+
+      it 'should fail... gracefully if no data is found for that ticker' do
+        stock = StockQuote::Stock.stock('asdf')
+        expect(stock.response_code).to eq(404)
+        stock.should respond_to(:no_data_message)
+        stock.no_data_message.should_not be_nil
+      end
+
+      it 'should fail... gracefully if the request errors out' do
+        stock = StockQuote::Stock.stock('\/')
+        expect(stock.response_code).to eq(404)
+        expect(stock).to be_instance_of(StockQuote::NoDataForStockError)
+      end
+
+    end
+
   end
 
 end

@@ -21,6 +21,9 @@ module StockQuote
       elsif data['count'] && data['count'] == 0
         @no_data_message = 'Query returns no valid data'
         @response_code = 404
+      elsif data.length == 1 && data['symbol']
+        @no_data_message = 'Query returns no data besides the symbol'
+        @response_code = 404
       else
         @response_code = 200
         data.map do |k, v|
@@ -41,7 +44,7 @@ module StockQuote
           parse(response, symbol, format)
         else
           warn "[BAD REQUEST] #{ url }"
-          NoDataForStockError.new
+          return NoDataForStockError.new
         end
       end
     end
